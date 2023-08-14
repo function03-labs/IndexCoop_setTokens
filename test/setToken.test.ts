@@ -2,7 +2,8 @@ import { ethers, waffle } from "hardhat";
 import { Contract, Signer } from "ethers";
 import { expect } from "chai";
 import { SetToken } from "../contracts/setToken.sol";
-
+import fs from "fs";
+import path from "path";
 describe("SetToken Contract", function () {
   let accounts: Signer[];
   let setToken: Contract;
@@ -10,14 +11,19 @@ describe("SetToken Contract", function () {
   beforeEach(async function () {
     accounts = await ethers.getSigners();
 
-    // If you have a local version of the SetToken contract, you can deploy it using:
-    // const SetTokenFactory = await ethers.getContractFactory("SetToken");
-    // setToken = await SetTokenFactory.deploy(/* constructor arguments */);
+    // Read the address from the JSON file
+    const addresses = JSON.parse(
+      fs.readFileSync(
+        path.join(__dirname, "..", "deployedAddresses.json"),
+        "utf-8"
+      )
+    );
+    const setTokenAddress = addresses.setTokenAddress;
 
     // If you're testing the mainnet version, you can connect directly:
     setToken = await ethers.getContractAt(
       "ISetToken",
-      "0x93e70429f3493e5584291093a61530485ff566de",
+      setTokenAddress,
       accounts[0]
     );
   });

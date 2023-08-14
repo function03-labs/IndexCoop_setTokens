@@ -2,6 +2,8 @@ import { ethers } from "hardhat";
 import { Contract, Signer } from "ethers";
 import { expect } from "chai";
 import { tradeModuleAbi } from "../eth-momentum-bot/src/abis/tradeModule";
+import fs from "fs";
+import path from "path";
 
 describe("SetToken Rebalancing", function () {
   let accounts: Signer[];
@@ -11,8 +13,14 @@ describe("SetToken Rebalancing", function () {
 
   const WETH_ADDRESS = "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2";
   const USDC_ADDRESS = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
-  const TRADE_MODULE_ADDRESS = "0xFaAB3F8f3678f68AA0d307B66e71b636F82C28BF"; // Replace with actual TradeModule address
-  const setTokenAddress = "0x93e70429f3493e5584291093a61530485ff566de";
+  const TRADE_MODULE_ADDRESS = "0xFaAB3F8f3678f68AA0d307B66e71b636F82C28BF";
+  const addresses = JSON.parse(
+    fs.readFileSync(
+      path.join(__dirname, "..", "deployedAddresses.json"),
+      "utf-8"
+    )
+  );
+  const setTokenAddress = addresses.setTokenAddress;
   beforeEach(async function () {
     accounts = await ethers.getSigners();
     accountAddress = await accounts[0].getAddress();
@@ -51,12 +59,20 @@ describe("SetToken Rebalancing", function () {
     }
 
     // Initialize TradeModule for the SetToken
-    const tx = await tradeModule.initialize(setTokenAddress);
-    const receipt = await tx.wait();
-    console.log(
-      "TradeModule initialized for SetToken. Transaction Hash:",
-      receipt.transactionHash
-    );
+    try {
+      const tx = await tradeModule.initialize(setTokenAddress, {
+        gasLimit: 8000000,
+      });
+      const receipt = await tx.wait();
+      console.log(
+        "TradeModule initialized for SetToken. Transaction Hash:",
+        receipt.transactionHash
+      );
+    } catch (error) {
+      throw new Error(
+        `Failed to initialize TradeModule for SetToken. Error: ${error}`
+      );
+    }
   });
   it("should rebalance SetToken based on trend score", async function () {
     console.log("Starting rebalancing based on trend score...");
