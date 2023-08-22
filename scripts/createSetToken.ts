@@ -1485,6 +1485,11 @@ export async function createSetToken(): Promise<string> {
   const outputPath = path.join(__dirname, "..", "deployedAddresses.json");
   if (!fs.existsSync(outputPath)) {
     fs.writeFileSync(outputPath, JSON.stringify({ setTokenAddress }, null, 2));
+  } else {
+    const file = fs.readFileSync(outputPath);
+    const data = JSON.parse(file.toString());
+    data.setTokenAddress = setTokenAddress;
+    fs.writeFileSync(outputPath, JSON.stringify(data, null, 2));
   }
   return txReceipt;
 }

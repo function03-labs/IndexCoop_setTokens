@@ -55,7 +55,18 @@ describe("SetToken Contract", function () {
     const wethRealUnit = await setToken.getDefaultPositionRealUnit(
       "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
     );
-    console.log("WETH Default Position Real Unit:", wethRealUnit.toString());
+    console.log(
+      "WETH Default Position Real Unit:",
+      wethRealUnit.toString() / 1e18
+    );
+    // usdc
+    const usdcRealUnit = await setToken.getDefaultPositionRealUnit(
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+    );
+    console.log(
+      "USDC Default Position Real Unit:",
+      usdcRealUnit.toString() / 1e6
+    );
   });
   it("should retrieve and log the external position real unit for WETH", async function () {
     const wethExternalUnit = await setToken.getExternalPositionRealUnit(
@@ -64,8 +75,18 @@ describe("SetToken Contract", function () {
     );
     console.log(
       "WETH External Position Real Unit:",
-      wethExternalUnit.toString()
+      wethExternalUnit.toString() / 1e18
     );
+    // usdc
+    const usdcExternalUnit = await setToken.getExternalPositionRealUnit(
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+      "0xFaAB3F8f3678f68AA0d307B66e71b636F82C28BF"
+    );
+    console.log(
+      "USDC External Position Real Unit:",
+      usdcExternalUnit.toString() / 1e6
+    );
+
     // expect(wethExternalUnit).to.exist;
   });
 
@@ -75,8 +96,28 @@ describe("SetToken Contract", function () {
     );
     console.log(
       "WETH Total Component Real Units:",
-      wethTotalRealUnits.toString()
+      wethTotalRealUnits.toString() / 1e18
     );
+    const usdcTotalRealUnits = await setToken.getTotalComponentRealUnits(
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+    );
+    console.log(
+      "USDC Total Component Real Units:",
+      usdcTotalRealUnits.toString() / 1e6
+    );
+    // expect(wethTotalRealUnits).to.exist;
+  });
+  //display the total supply of the set token
+  it("should retrieve and log the total supply of the set token", async function () {
+    const totalSupply = await setToken.totalSupply();
+    console.log("Total Supply:", totalSupply.toString() / 1e18);
+    // expect(wethTotalRealUnits).to.exist;
+  });
+
+  //should display own portfolio of those tokens
+  it("should retrieve and log the balance of the set token", async function () {
+    const balance = await setToken.balanceOf(await accounts[0].getAddress());
+    console.log("Balance:", balance.toString() / 1e18);
     // expect(wethTotalRealUnits).to.exist;
   });
 });

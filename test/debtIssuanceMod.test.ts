@@ -58,9 +58,9 @@ describe("DebtIssuanceModuleV2 Tests", function () {
   const logBalances = async (
     description: string,
     address: string,
-    wethToken,
-    usdcToken
-  ) => {
+    wethToken: Contract,
+    usdcToken: Contract
+  ): Promise<void> => {
     const wethBalance = await wethToken.balanceOf(address);
     const usdcBalance = await usdcToken.balanceOf(address);
     const setBalance = await setToken.balanceOf(address);
@@ -134,9 +134,7 @@ describe("DebtIssuanceModuleV2 Tests", function () {
     const initialBalance = await setToken.balanceOf(
       await accounts[0].getAddress()
     );
-    console.log("Initial Balance:", initialBalance.toString());
-    const amountToIssue = ethers.utils.parseEther("1");
-    console.log("Amount to Issue:", amountToIssue.toString());
+    const amountToIssue = ethers.utils.parseEther("10");
     await logBalances(
       "Balances before issuance:",
       await accounts[0].getAddress(),
