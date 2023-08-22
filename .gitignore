@@ -6,3 +6,12 @@ typechain
 #Hardhat files
 cache
 artifacts
+
+.env 
+.env.local
+ 
+# Misc
+*.log
+*.log.*
+*.pid
+*.seed
